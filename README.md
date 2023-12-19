@@ -10,3 +10,9 @@
 - ### Block 1 - Spark application
 - ### Block 2 - Working with data in Spark
 - ### Block 3 - Distributed estimation with ML models using UDF in Spark
+
+## Homework 3 - "Kafka + Flink"
+
+- ### Block 1 - Flink checkpoint
+- ### Block 2 - Flink Window
+- ### Block 3 - Kafka backoff
