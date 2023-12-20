@@ -1,7 +1,7 @@
 from pyflink.common import SimpleStringSchema
 from pyflink.common.typeinfo import Types, RowTypeInfo
 from pyflink.common.watermark_strategy import WatermarkStrategy
-from pyflink.datastream import StreamExecutionEnvironment, TimeCharacteristic
+from pyflink.datastream import StreamExecutionEnvironment, TimeCharacteristic, FileSystemCheckpointStorage
 from pyflink.datastream.connectors import DeliveryGuarantee
 from pyflink.datastream.connectors.kafka import KafkaSource, \
     KafkaOffsetsInitializer, KafkaSink, KafkaRecordSerializationSchema
@@ -12,15 +12,25 @@ SOURCE_TOPIC_NAME = "block1"
 SOURCE_GROUP_ID = "pyflink-e2e-source-block1"
 SOURCE_NAME = "Kafka Source - Block 1"
 SINK_TOPIC_NAME = "block1-processed"
+# "local" or "hdfs" to turn off - None
+CHECKPOINT_STORAGE = "local"
 
 
 def python_data_stream_example():
     env = StreamExecutionEnvironment.get_execution_environment()
-    # Set the parallelism to be one to make sure that all data including fired timer and normal data
-    # are processed by the same worker and the collected result would be in order which is good for
-    # assertion.
     env.set_parallelism(1)
     env.set_stream_time_characteristic(TimeCharacteristic.EventTime)
+
+    if CHECKPOINT_STORAGE:
+        if CHECKPOINT_STORAGE is "local":
+            env.get_checkpoint_config().set_checkpoint_storage(
+                FileSystemCheckpointStorage("file:///opt/pyflink/Block_1/tmp/checkpoints/logs")
+            )
+        elif CHECKPOINT_STORAGE is "hdfs":
+            env.get_checkpoint_config().set_checkpoint_storage(
+                FileSystemCheckpointStorage("hdfs://namenode:8020/checkpoints/Block_1/logs")
+            )
+        env.enable_checkpointing(10000)
 
     type_info: RowTypeInfo = Types.ROW_NAMED(['device_id', 'temperature', 'execution_time'],
                                              [Types.LONG(), Types.DOUBLE(), Types.INT()])

@@ -33,3 +33,12 @@ python producer.py
 ```commandline
 python consumer.py
 ```
+
+#### Flink Job
+![Flink_job](images/Flink_job.png)
+
+#### Checkpoints to local dir
+![local_dir](images/local_dir.png)
+
+#### Checkpoints to HDFS
+![hdfs](images/hdfs.png)
