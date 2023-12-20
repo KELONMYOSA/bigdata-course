@@ -14,7 +14,7 @@ docker-compose exec kafka kafka-topics.sh --bootstrap-server kafka:9092 --create
 docker-compose exec kafka kafka-topics.sh --bootstrap-server kafka:9092 --create --topic block1-processed --partitions 3 --replication-factor 1
 ```
 
-#### Передаем джобу в Flink
+#### Передаем джобу в Flink (Указать CHECKPOINT_STORAGE - "local", "hdfs" or None)
 
 ```commandline
 docker-compose exec jobmanager ./bin/flink run -py /opt/pyflink/Block_1/device_job.py -d
